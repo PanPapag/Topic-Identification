@@ -51,6 +51,21 @@ class App:
                 os.makedirs(self.classification_out_dir)
 
 
+    def preprocess_data(self):
+
+        print("Data preprocessing..")
+
+        print("Data preprocessing completed.")
+
+
     def run(self):
-        print("App running")
-        print(self.train_df)
+
+        print("App running..")
+
+        # if data has not been preprocessed before
+        if not self.cache:
+            # and preprocess flag is True
+            if self.preprocess:
+                self.preprocess_data()
+
+        print("App completed.")
