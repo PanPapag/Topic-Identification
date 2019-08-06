@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 import pandas as pd
 import re
 import spacy
@@ -18,6 +19,12 @@ class Preprocessor:
             self.filter = WordNetLemmatizer()
         elif self.transformation == "STEM":
             self.filter = LancasterStemmer()
+
+
+    def text_normalization(self, col=None):
+
+        # Remove rows with missing values
+        self.input_df = self.input_df.dropna()
 
 
     def test(self):

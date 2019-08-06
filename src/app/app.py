@@ -1,7 +1,8 @@
-import pandas as pd
 import logging
 import math
+import pandas as pd
 import os
+import time
 
 from data_preprocessing.preprocessor import *
 
@@ -64,21 +65,41 @@ class App:
 
     def preprocess_data(self):
 
+        data_start = time.time()
         print("Data preprocessing..")
         # create preprocessor object
         preprocessor = Preprocessor(self.train_df, self.preprocess)
         # define processed training set
         processed_train_set =  "/".join([self.datasets,'processed_train_set.csv'])
+        train_start = time.time()
+        print("\t Train set preprocesssing..")
         # Title preprocessing
-
+        title_start = time.time()
+        print("\t \t Title preprocesssing..")
+        self.train_df = preprocessor.text_normalization(col='Title')
+        title_end = time.time()
+        print("\t \t Title preprocesssing completed. Time elapsed: {:.3f} seconds"
+              .format(title_end - title_start))
         # Content preprocessing
-        
-        print("Data preprocessing completed.")
+        content_start = time.time()
+        print("\t \t Content preprocesssing..")
+        self.train_df = preprocessor.text_normalization(col='Content')
+        content_end = time.time()
+        print("\t \t Content preprocesssing completed. Time elapsed: {:.3f} seconds"
+              .format(content_end - content_start))
+        # Train set preprocessing completed
+        train_end = time.time()
+        print("\t Train set preprocesssing completed. Time elapsed: {:.3f} seconds"
+              .format(train_end - train_start))
+        # Data preprocessing completed
+        data_end = time.time()
+        print("Data preprocessing completed. Time elapsed: {:.3f} seconds\n"
+              .format(data_end - data_start))
 
 
     def run(self):
 
-        print("App running..")
+        print("App running..\n")
 
         # if data has not been preprocessed before and preprocess flag is True
         if not self.cache and self.preprocess:
