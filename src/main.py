@@ -12,8 +12,8 @@ def make_args_parser():
                          help='Define the relative path of the output directory')
     parser.add_argument('--duplicates', dest='threshold', type=float, default=None,
                          help='Find similar documents within above a certain theta')
-    parser.add_argument('--preprocess', action='store_true', default=False,
-                        help='Articles preprocessing')
+    parser.add_argument('--preprocess', dest='filter', choices=['LEM', 'STEM'],
+                        default=None, help='Articles preprocessing')
     parser.add_argument('--wordcloud', action='store_true', default=False,
                         help='Generate word clouds for each article category')
     parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN'], default=None,
@@ -43,7 +43,7 @@ def main():
     args = make_args_parser()
     print_args(args)
     # create app object and pass info given by command line arguments
-    app = App(args.datasets, args.outputs, args.threshold, args.preprocess,
+    app = App(args.datasets, args.outputs, args.threshold, args.filter,
               args.wordcloud, args.classification, args.features, args.kfold, args.cache)
     # run app
     app.run()

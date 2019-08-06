@@ -1,9 +1,13 @@
 import pandas as pd
+import logging
+import math
 import os
+
+from data_preprocessing.preprocessor import *
 
 class App:
 
-    def __init__(self, datasets, outputs, threshold=None, preprocess=False,
+    def __init__(self, datasets, outputs, threshold=None, preprocess=None,
                  wordcloud=False, classification=None, features=None, kfold=False, cache=False):
 
         # pass info from arguments
@@ -28,6 +32,13 @@ class App:
         # read csv train and test files using pandas
         self.train_df = pd.read_csv(self.csv_train_file, sep='\t')
         self.test_df = pd.read_csv(self.csv_test_file, sep='\t') if not self.kfold else None
+
+        # discard RowNum
+        self.train_df.drop('RowNum', axis=1, inplace=True)
+        self.test_df.drop('RowNum', axis=1, inplace=True)
+
+        # get unique categories using training set
+        self.categories = self.train_df['Category'].unique()
 
         # define output directory names
         self.wordcloud_out_dir = "/".join([outputs,'wordcloud_out_dir/']) if self.wordcloud else None
@@ -54,7 +65,14 @@ class App:
     def preprocess_data(self):
 
         print("Data preprocessing..")
+        # create preprocessor object
+        preprocessor = Preprocessor(self.train_df, self.preprocess)
+        # define processed training set
+        processed_train_set =  "/".join([self.datasets,'processed_train_set.csv'])
+        # Title preprocessing
 
+        # Content preprocessing
+        
         print("Data preprocessing completed.")
 
 
@@ -62,10 +80,8 @@ class App:
 
         print("App running..")
 
-        # if data has not been preprocessed before
-        if not self.cache:
-            # and preprocess flag is True
-            if self.preprocess:
-                self.preprocess_data()
+        # if data has not been preprocessed before and preprocess flag is True
+        if not self.cache and self.preprocess:
+            self.preprocess_data()
 
         print("App completed.")
