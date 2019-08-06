@@ -95,7 +95,9 @@ class App:
         data_end = time.time()
         print("Data preprocessing completed. Time elapsed: {:.3f} seconds\n"
               .format(data_end - data_start))
-        preprocessor.test()
+        # save processed train set to csv
+        preprocessor.save_to_csv(self.train_df, processed_train_set)
+
 
     def run(self):
 

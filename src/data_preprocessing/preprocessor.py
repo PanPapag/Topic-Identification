@@ -2,11 +2,16 @@ import logging
 import numpy as np
 import pandas as pd
 import re
+import string
 import spacy
 
+import nltk
 from nltk.stem import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+
+from gensim.parsing.preprocessing import remove_stopwords
+from gensim.parsing.preprocessing import STOPWORDS
 
 class Preprocessor:
 
@@ -14,12 +19,6 @@ class Preprocessor:
         # pass info from arguments
         self.input_df = input_df
         self.transformation = transformation
-        # define the corresponding filter given the preprocess transformation
-        if self.transformation == "LEM":
-            self.filter = WordNetLemmatizer()
-        elif self.transformation == "STEM":
-            self.filter = LancasterStemmer()
-
 
     def preprocess(self, col=None):
 
@@ -36,7 +35,36 @@ class Preprocessor:
         return self.input_df
 
     def text_normalization(self, text):
-        return text.lower()
+
+        # convert text to lowercase
+        text = text.lower()
+        # remove numbers
+        text = re.sub(r'\d+', '', text)
+        # remove punctuation
+        text = text.translate(str.maketrans('', '', string.punctuation))
+        # remove white spaces
+        text = text.strip()
+        # remove stop words
+        removed = remove_stopwords(text)
+        text = "".join(removed)
+        # define transformation
+        if self.transformation == "STEM":
+            stemmer = LancasterStemmer()
+            stem_sentence = []
+            token_words = word_tokenize(text)
+            stem_sentence = [stemmer.stem(word) for word in token_words]
+            text = " ".join(stem_sentence)
+        elif self.transformation == "LEM":
+            lemmatizer = WordNetLemmatizer()
+            lem_sentence = []
+            token_words = word_tokenize(text)
+            lem_sentence = [lemmatizer.lemmatize(word) for word in token_words]
+            text = " ".join(lem_sentence)
+        # return normalized text
+        return text
+
+    def save_to_csv(self, df, path):
+        df.to_csv(path_or_buf=path, index=False, sep='\t')
 
     def test(self):
         print(self.input_df.Title)
