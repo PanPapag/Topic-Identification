@@ -76,14 +76,14 @@ class App:
         # Title preprocessing
         title_start = time.time()
         print("\t \t Title preprocesssing..")
-        self.train_df = preprocessor.text_normalization(col='Title')
+        self.train_df = preprocessor.preprocess(col='Title')
         title_end = time.time()
         print("\t \t Title preprocesssing completed. Time elapsed: {:.3f} seconds"
               .format(title_end - title_start))
         # Content preprocessing
         content_start = time.time()
         print("\t \t Content preprocesssing..")
-        self.train_df = preprocessor.text_normalization(col='Content')
+        self.train_df = preprocessor.preprocess(col='Content')
         content_end = time.time()
         print("\t \t Content preprocesssing completed. Time elapsed: {:.3f} seconds"
               .format(content_end - content_start))
@@ -95,7 +95,7 @@ class App:
         data_end = time.time()
         print("Data preprocessing completed. Time elapsed: {:.3f} seconds\n"
               .format(data_end - data_start))
-
+        preprocessor.test()
 
     def run(self):
 

@@ -21,13 +21,23 @@ class Preprocessor:
             self.filter = LancasterStemmer()
 
 
-    def text_normalization(self, col=None):
+    def preprocess(self, col=None):
 
-        # Remove rows with missing values
-        self.input_df = self.input_df.dropna()
+        # Remove rows with missing values in column col
+        self.input_df = self.input_df[pd.notnull(self.input_df[col])]
+        # Speed up code using numpy vectorization
+        vfunc = np.vectorize(self.text_normalization)
+        # define text to be normalized
+        if col == 'Title':
+            self.input_df.Title = vfunc(self.input_df.Title.values)
+        elif col == 'Content':
+            self.input_df.Content = vfunc(self.input_df.Content.values)
+        # return processed input_df
+        return self.input_df
 
+    def text_normalization(self, text):
+        return text.lower()
 
     def test(self):
-        print(self.input_df)
-        print(self.transformation)
-        print(self.filter)
+        print(self.input_df.Title)
+        #print(self.input_df.Content)
