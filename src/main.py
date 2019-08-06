@@ -1,12 +1,14 @@
 import argparse
 
+from app.app import *
+
 def make_args_parser():
     # create an ArgumentParser object
     parser = argparse.ArgumentParser(description='Applied machine learning in automated text categorization')
     # fill parser with information about program arguments
     parser.add_argument('--datasets', default='datasets',
                          help='Define the relative path of the dataset directory')
-    parser.add_argument('--outputs', default='datasets',
+    parser.add_argument('--outputs', default='outputs',
                          help='Define the relative path of the output directory')
     parser.add_argument('--duplicates', dest='threshold', type=float, default=None,
                          help='Find similar documents within above a certain theta')
@@ -40,6 +42,11 @@ def main():
     # parse and print arguments
     args = make_args_parser()
     print_args(args)
+    # create app object and pass info given by command line arguments
+    app = App(args.datasets, args.outputs, args.threshold, args.preprocess,
+              args.wordcloud, args.classification, args.features, args.kfold, args.cache)
+    # run app
+    app.run()
 
 if __name__ == '__main__':
     main()
