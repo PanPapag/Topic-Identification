@@ -3,20 +3,22 @@ import argparse
 def make_args_parser():
     # create an ArgumentParser object
     parser = argparse.ArgumentParser(description='Applied machine learning in automated text categorization')
-    # filling parser with information about program arguments
+    # fill parser with information about program arguments
     parser.add_argument('--datasets', default='datasets',
                          help='Define the relative path of the dataset directory')
     parser.add_argument('--outputs', default='datasets',
                          help='Define the relative path of the output directory')
     parser.add_argument('--duplicates', dest='threshold', type=float, default=None,
                          help='Find similar documents within above a certain theta')
-    parser.add_argument('--preprocess', action='store_true', default=True,
+    parser.add_argument('--preprocess', action='store_true', default=False,
                         help='Articles preprocessing')
     parser.add_argument('--wordcloud', action='store_true', default=False,
                         help='Generate word clouds for each article category')
     parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN'], default=None,
                         help='''Runs default classifiers: Naive Bayes, Random Forest,
                         Support Vector Machine and K-Nearest Neighbor''')
+    parser.add_argument('--features', choices=['BoW', 'SVD', 'W2V'], default = None,
+                        help='Define features')
     parser.add_argument('--kfold', action='store_true',
                         help='Evaluate and report the performance of each method using 10-fold Cross Validation')
     parser.add_argument('--cache', action='store_true',
