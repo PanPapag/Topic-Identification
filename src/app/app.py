@@ -34,7 +34,7 @@ class App:
         self.train_df = pd.read_csv(self.csv_train_file, sep='\t')
         self.test_df = pd.read_csv(self.csv_test_file, sep='\t') if not self.kfold else None
 
-        # discard RowNum
+        # discard RowNum TODO get logging and error raise for processed
         self.train_df.drop('RowNum', axis=1, inplace=True)
         self.test_df.drop('RowNum', axis=1, inplace=True)
 
@@ -67,8 +67,8 @@ class App:
 
         data_start = time.time()
         print("Data preprocessing..")
-        # create preprocessor object
-        preprocessor = Preprocessor(self.train_df, self.preprocess)
+        # create preprocessor object for training set
+        train_preprocessor = Preprocessor(self.train_df, self.preprocess)
         # define processed training set
         processed_train_set =  "/".join([self.datasets,'processed_train_set.csv'])
         train_start = time.time()
@@ -76,14 +76,14 @@ class App:
         # Title preprocessing
         title_start = time.time()
         print("\t \t Title preprocesssing..")
-        self.train_df = preprocessor.preprocess(col='Title')
+        self.train_df = train_preprocessor.preprocess(col='Title')
         title_end = time.time()
         print("\t \t Title preprocesssing completed. Time elapsed: {:.3f} seconds"
               .format(title_end - title_start))
         # Content preprocessing
         content_start = time.time()
         print("\t \t Content preprocesssing..")
-        self.train_df = preprocessor.preprocess(col='Content')
+        self.train_df = train_preprocessor.preprocess(col='Content')
         content_end = time.time()
         print("\t \t Content preprocesssing completed. Time elapsed: {:.3f} seconds"
               .format(content_end - content_start))
@@ -91,12 +91,39 @@ class App:
         train_end = time.time()
         print("\t Train set preprocesssing completed. Time elapsed: {:.3f} seconds"
               .format(train_end - train_start))
+        # save processed train set to csv and define proc
+        train_preprocessor.save_to_csv(self.train_df, processed_train_set)
+        if not self.kfold:
+            # create preprocessor object for test set
+            test_preprocessor = Preprocessor(self.test_df, self.preprocess)
+            # define processed training set
+            processed_test_set =  "/".join([self.datasets,'processed_test_set.csv'])
+            test_start = time.time()
+            print("\t Test set preprocesssing..")
+            # Title preprocessing
+            title_start = time.time()
+            print("\t \t Title preprocesssing..")
+            self.test_df = test_preprocessor.preprocess(col='Title')
+            title_end = time.time()
+            print("\t \t Title preprocesssing completed. Time elapsed: {:.3f} seconds"
+                  .format(title_end - title_start))
+            # Content preprocessing
+            content_start = time.time()
+            print("\t \t Content preprocesssing..")
+            self.test_df = test_preprocessor.preprocess(col='Content')
+            content_end = time.time()
+            print("\t \t Content preprocesssing completed. Time elapsed: {:.3f} seconds"
+                  .format(content_end - content_start))
+            # Test set preprocessing completed
+            test_end = time.time()
+            print("\t Test set preprocesssing completed. Time elapsed: {:.3f} seconds"
+                  .format(test_end - test_start))
+            # save processed test set to csv and define proc
+            test_preprocessor.save_to_csv(self.test_df, processed_test_set)
         # Data preprocessing completed
         data_end = time.time()
         print("Data preprocessing completed. Time elapsed: {:.3f} seconds\n"
               .format(data_end - data_start))
-        # save processed train set to csv
-        preprocessor.save_to_csv(self.train_df, processed_train_set)
 
 
     def run(self):
