@@ -15,9 +15,10 @@ from gensim.parsing.preprocessing import STOPWORDS
 
 class Preprocessor:
 
-    def __init__(self, input_df=None, transformation=None):
+    def __init__(self, input_df=None, categories=None, transformation=None):
         # pass info from arguments
         self.input_df = input_df
+        self.categories = categories
         self.transformation = transformation
 
     def preprocess(self, col=None):
@@ -63,8 +64,18 @@ class Preprocessor:
         # return normalized text
         return text
 
+
     def save_to_csv(self, df, path):
         df.to_csv(path_or_buf=path, index=False, sep='\t')
+
+    # return a dict: category --> all articles of a given category into a single string
+    def text_per_category(self):
+        return {category: self.join_text(category) for category in self.categories}
+
+    # Joins all articles of a given category into a single string
+    def join_text(self, label):
+        return ' '.join(self.input_df.loc[self.input_df['Category'] == label]['Content'].values)
+
 
     def test(self):
         print(self.input_df.Title)

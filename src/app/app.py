@@ -5,6 +5,7 @@ import os
 import time
 
 from data_preprocessing.preprocessor import *
+from word_cloud.wordcloud import *
 
 class App:
 
@@ -34,9 +35,17 @@ class App:
         self.train_df = pd.read_csv(self.csv_train_file, sep='\t')
         self.test_df = pd.read_csv(self.csv_test_file, sep='\t') if not self.kfold else None
 
-        # discard RowNum TODO get logging and error raise for processed
-        self.train_df.drop('RowNum', axis=1, inplace=True)
-        self.test_df.drop('RowNum', axis=1, inplace=True)
+        # discard RowNum TODO get this into preprocessing
+        print("Discarding column RowNum..")
+        try:
+            self.train_df.drop('RowNum', axis=1, inplace=True)
+        except KeyError:
+            print("\t File {} has no column RowNum".format(self.csv_train_file))
+        try:
+            self.test_df.drop('RowNum', axis=1, inplace=True)
+        except KeyError:
+            print("\t File {} has no column RowNum".format(self.csv_test_file))
+        print("Discarding column RowNum completed.\n")
 
         # get unique categories using training set
         self.categories = self.train_df['Category'].unique()
@@ -126,6 +135,16 @@ class App:
               .format(data_end - data_start))
 
 
+    def generate_wordclouds(self):
+        wc_start = time.time()  #TODO change it a little bit for better abstraction
+        print("Generating wordcloud per category..")
+        wcGen = WordCloud(self.csv_train_file, self.categories, self.wordcloud_out_dir)
+        wcGen.generate_wordcloud()
+        wc_end = time.time()
+        print("Wordcloud generating completed. Time elapsed: {:.3f} seconds\n"
+              .format(wc_end - wc_start))
+
+
     def run(self):
 
         print("App running..\n")
@@ -133,5 +152,8 @@ class App:
         # if data has not been preprocessed before and preprocess flag is True
         if not self.cache and self.preprocess:
             self.preprocess_data()
+
+        if self.wordcloud:
+            self.generate_wordclouds()
 
         print("App completed.")
