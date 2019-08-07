@@ -62,7 +62,7 @@ class Preprocessor:
             text = " ".join(lem_sentence)
         # return normalized text
         return text
-        
+
 
     def join_spec_rows_of_spec_column_value(self, label, cols, spec_col):
         acum = []

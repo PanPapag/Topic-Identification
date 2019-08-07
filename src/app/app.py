@@ -35,19 +35,6 @@ class App:
         self.train_df = pd.read_csv(self.csv_train_file, sep='\t')
         self.test_df = pd.read_csv(self.csv_test_file, sep='\t') if not self.kfold else None
 
-        # discard RowNum TODO get this into preprocessing
-        print("Discarding column RowNum..")
-        try:
-            self.train_df.drop('RowNum', axis=1, inplace=True)
-        except KeyError:
-            print("\t File {} has no column RowNum".format(self.csv_train_file))
-        try:
-            self.test_df.drop('RowNum', axis=1, inplace=True)
-        except KeyError:
-            print("\t File {} has no column RowNum".format(self.csv_test_file))
-        print("Discarding column RowNum completed.\n")
-        self.train_df.dropna(inplace=True)  #TODO
-        self.test_df.dropna(inplace=True)
         # get unique categories using training set
         self.categories = self.train_df['Category'].unique()
 
@@ -72,6 +59,38 @@ class App:
             if not os.path.exists(self.classification_out_dir):
                 os.makedirs(self.classification_out_dir)
 
+    def clean_data(self):
+        # discard column RowNum and delte rows with Nan values
+        print("Cleaning training set..")
+        print("\t Discarding column RowNum..")
+        try:
+            self.train_df.drop('RowNum', axis=1, inplace=True)
+            print("\t Discarding column RowNum completed.")
+        except KeyError:
+            print("\t File {} has no column RowNum.".format(self.csv_train_file))
+        print("\t Deleting rows with Nan values..")
+        try:
+            self.train_df.dropna(inplace=True)
+            print("\t Deleting rows with Nan values completed.")
+        except KeyError:
+            print("\t File {} has rows with NaN values.".format(self.csv_train_file))
+        print("\t Cleaning training set completed.")
+
+        if not self.kfold:
+            print("Cleaning test set..")
+            print("\t Discarding column RowNum..")
+            try:
+                self.test_df.drop('RowNum', axis=1, inplace=True)
+                print("\t Discarding column RowNum completed.")
+            except KeyError:
+                print("\t File {} has no column RowNum.".format(self.csv_test_file))
+            print("\t Deleting rows with Nan values..")
+            try:
+                self.test_df.dropna(inplace=True)
+                print("\t Deleting rows with Nan values completed.")
+            except KeyError:
+                print("\t File {} has rows with NaN values.".format(self.csv_test_file))
+            print("Cleaning test set completed.\n")
 
     def preprocess_data(self):
 
@@ -143,14 +162,13 @@ class App:
         wc = WordCloud(self.wordcloud_out_dir)
         # create a preprocessor object to handle processed training set
         filter = Preprocessor(self.train_df)
-        # define columns whom rows content want to extract
-        cols = ['Title','Content']
         # iterate over each label
         for label in self.categories:
             print("\t Generating wordcloud for category {}..".format(label))
             gen_start = time.time()
-            text = filter.join_spec_rows_of_spec_column_value(label, cols, 'Category')
-            wc.generate_wordcloud(label, text)
+            text = filter.join_spec_rows_of_spec_column_value(label, ['Title','Content'], 'Category')
+            print(text)
+            #wc.generate_wordcloud(label, text)
             gen_end = time.time()
             print("\t Wordcloud generating for category {} completed. Time elapsed: {:.3f} seconds"
                   .format(label, gen_end - gen_start))
@@ -163,13 +181,12 @@ class App:
 
         print("App running..\n")
 
-        # if data has not been preprocessed before and preprocess flag is True
+        self.clean_data()
+
         if not self.cache and self.preprocess:
             self.preprocess_data()
 
         if self.wordcloud:
             self.generate_wordclouds()
-
-        #print(self.train_df.loc[self.train_df['Category'] == 'Technology']['Content'].values)
 
         print("App completed.")
