@@ -46,7 +46,8 @@ class App:
         except KeyError:
             print("\t File {} has no column RowNum".format(self.csv_test_file))
         print("Discarding column RowNum completed.\n")
-
+        self.train_df.dropna(inplace=True)  #TODO
+        self.test_df.dropna(inplace=True)
         # get unique categories using training set
         self.categories = self.train_df['Category'].unique()
 
@@ -136,10 +137,23 @@ class App:
 
 
     def generate_wordclouds(self):
-        wc_start = time.time()  #TODO change it a little bit for better abstraction
+        wc_start = time.time()
         print("Generating wordcloud per category..")
-        wcGen = WordCloud(self.csv_train_file, self.categories, self.wordcloud_out_dir)
-        wcGen.generate_wordcloud()
+        # create WordCloud object and pass appropriate info
+        wc = WordCloud(self.wordcloud_out_dir)
+        # create a preprocessor object to handle processed training set
+        filter = Preprocessor(self.train_df)
+        # define columns whom rows content want to extract
+        cols = ['Title','Content']
+        # iterate over each label
+        for label in self.categories:
+            print("\t Generating wordcloud for category {}..".format(label))
+            gen_start = time.time()
+            text = filter.join_spec_rows_of_spec_column_value(label, cols, 'Category')
+            wc.generate_wordcloud(label, text)
+            gen_end = time.time()
+            print("\t Wordcloud generating for category {} completed. Time elapsed: {:.3f} seconds"
+                  .format(label, gen_end - gen_start))
         wc_end = time.time()
         print("Wordcloud generating completed. Time elapsed: {:.3f} seconds\n"
               .format(wc_end - wc_start))
@@ -155,5 +169,7 @@ class App:
 
         if self.wordcloud:
             self.generate_wordclouds()
+
+        #print(self.train_df.loc[self.train_df['Category'] == 'Technology']['Content'].values)
 
         print("App completed.")
