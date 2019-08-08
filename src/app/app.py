@@ -68,13 +68,13 @@ class App:
             print("\t Discarding column RowNum completed.")
         except KeyError:
             print("\t File {} has no column RowNum.".format(self.csv_train_file))
-        print("\t Deleting rows with Nan values..")
+        print("\t Deleting rows with NaN values..")
         try:
             self.train_df.dropna(inplace=True)
-            print("\t Deleting rows with Nan values completed.")
+            print("\t Deleting rows with NaN values completed.")
         except KeyError:
             print("\t File {} has rows with NaN values.".format(self.csv_train_file))
-        print("\t Cleaning training set completed.")
+        print("Cleaning training set completed.")
 
         if not self.kfold:
             print("Cleaning test set..")
@@ -84,10 +84,10 @@ class App:
                 print("\t Discarding column RowNum completed.")
             except KeyError:
                 print("\t File {} has no column RowNum.".format(self.csv_test_file))
-            print("\t Deleting rows with Nan values..")
+            print("\t Deleting rows with NaN values..")
             try:
                 self.test_df.dropna(inplace=True)
-                print("\t Deleting rows with Nan values completed.")
+                print("\t Deleting rows with NaN values completed.")
             except KeyError:
                 print("\t File {} has rows with NaN values.".format(self.csv_test_file))
             print("Cleaning test set completed.\n")

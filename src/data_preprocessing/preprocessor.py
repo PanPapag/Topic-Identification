@@ -38,12 +38,8 @@ class Preprocessor:
 
         # convert text to lowercase
         text = text.lower()
-        # remove numbers
-        text = re.sub(r'\d+', '', text)
-        # remove punctuation
-        text = text.translate(str.maketrans('', '', string.punctuation))
-        # remove white spaces
-        text = text.strip()
+        # remove all special characters, punctuation and spaces from string
+        text = re.sub(r'\W+',' ', text)
         # remove stop words
         removed = remove_stopwords(text)
         text = "".join(removed)
@@ -62,7 +58,6 @@ class Preprocessor:
             text = " ".join(lem_sentence)
         # return normalized text
         return text
-
 
     def join_spec_rows_of_spec_column_value(self, label, cols, spec_col):
         acum = []
