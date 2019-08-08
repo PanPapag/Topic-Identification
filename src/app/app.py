@@ -159,7 +159,7 @@ class App:
         wc_start = time.time()
         print("Generating wordcloud per category..")
         # create WordCloud object and pass appropriate info
-        wc = WordCloud(self.wordcloud_out_dir)
+        wc = WordCloudGen(self.wordcloud_out_dir)
         # create a preprocessor object to handle processed training set
         filter = Preprocessor(self.train_df)
         # iterate over each label
@@ -167,8 +167,7 @@ class App:
             print("\t Generating wordcloud for category {}..".format(label))
             gen_start = time.time()
             text = filter.join_spec_rows_of_spec_column_value(label, ['Title','Content'], 'Category')
-            print(text)
-            #wc.generate_wordcloud(label, text)
+            wc.generate_wordcloud(label, text)
             gen_end = time.time()
             print("\t Wordcloud generating for category {} completed. Time elapsed: {:.3f} seconds"
                   .format(label, gen_end - gen_start))
