@@ -16,8 +16,8 @@ def make_args_parser():
                         default=None, help='Articles preprocessing')
     parser.add_argument('--wordcloud', action='store_true', default=False,
                         help='Generate word clouds for each article category')
-    parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN'], default=None,
-                        help='''Runs default classifiers: Naive Bayes, Random Forest,
+    parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN', 'BEAT'],
+                        default=None, help='''Runs default classifiers: Naive Bayes, Random Forest,
                         Support Vector Machine and K-Nearest Neighbor''')
     parser.add_argument('--features', choices=['BoW', 'SVD', 'W2V'], default = None,
                         help='Define features')
