@@ -1,21 +1,21 @@
-import logging
 import math
 import pandas as pd
 import os
 import time
 
 from data_preprocessing.preprocessor import *
+from duplicates.duplicate import *
 from word_cloud.wordcloud import *
 
 class App:
 
-    def __init__(self, datasets, outputs, threshold=None, preprocess=None,
+    def __init__(self, datasets, outputs, dupl_threshold=None, preprocess=None,
                  wordcloud=False, classification=None, features=None, kfold=False, cache=False):
 
         # pass info from arguments
         self.datasets = datasets
         self.outputs = outputs
-        self.threshold = threshold
+        self.dupl_threshold = dupl_threshold
         self.preprocess = preprocess
         self.wordcloud = wordcloud
         self.classification = classification
@@ -40,7 +40,7 @@ class App:
 
         # define output directory names
         self.wordcloud_out_dir = "/".join([outputs,'wordcloud_out_dir/']) if self.wordcloud else None
-        self.duplicates_out_dir = "/".join([outputs,'duplicates_out_dir/']) if self.threshold else None
+        self.duplicates_out_dir = "/".join([outputs,'duplicates_out_dir/']) if self.dupl_threshold else None
         self.classification_out_dir = "/".join([outputs,'classification_out_dir/']) if self.classification else None
 
         # create output directories (if not already exist)
@@ -51,7 +51,7 @@ class App:
             if not os.path.exists(self.wordcloud_out_dir):
                 os.makedirs(self.wordcloud_out_dir)
 
-        if self.threshold:
+        if self.dupl_threshold:
             if not os.path.exists(self.duplicates_out_dir):
                 os.makedirs(self.duplicates_out_dir)
 
@@ -175,6 +175,15 @@ class App:
         print("Wordcloud generating completed. Time elapsed: {:.3f} seconds\n"
               .format(wc_end - wc_start))
 
+    def find_similar_articles(self):
+        start = time.time()
+        print("Finding similar articles..")
+        # create duplicate object
+        dup = Duplicate(self.duplicates_out_dir, self.train_df, self.dupl_threshold, self.categories)
+        dup.test()
+        end = time.time()
+        print("Finding similar articles completed. Time elapsed: {:.3f} seconds\n"
+              .format(end - start))
 
     def run(self):
 
@@ -187,5 +196,8 @@ class App:
 
         if self.wordcloud:
             self.generate_wordclouds()
+
+        if self.dupl_threshold:
+            self.find_similar_articles()
 
         print("App completed.")
