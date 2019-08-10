@@ -51,7 +51,6 @@ class Duplicate:
             corpus = self.df.loc[self.df['Category'] == label]['Content'].values
             # get articles' ids
             corpus_ids = self.df.loc[self.df['Category'] == label]['Id'].values
-            print(corpus_ids[0])
             # Use TF-IDF word embedding
             vectorizer = TfidfVectorizer(stop_words='english')
             X = vectorizer.fit_transform(corpus).toarray()
@@ -69,7 +68,7 @@ class Duplicate:
                                 id1 = corpus_ids[idx_i]
                                 id2 = corpus_ids[idx_j]
                                 # store similarity of documents
-                                similarities[(id1,id2)] = similarity
+                                docs_similarity[(id1,id2)] = similarity
 
         # write results to csv file
         self.export_to_csv(docs_similarity)
