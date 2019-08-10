@@ -175,15 +175,18 @@ class App:
         print("Wordcloud generating completed. Time elapsed: {:.3f} seconds\n"
               .format(wc_end - wc_start))
 
+
     def find_similar_articles(self):
+
         start = time.time()
         print("Finding similar articles..")
         # create duplicate object
         dup = Duplicate(self.duplicates_out_dir, self.train_df, self.dupl_threshold, self.categories)
-        dup.test()
+        dup.detect_duplicates()
         end = time.time()
         print("Finding similar articles completed. Time elapsed: {:.3f} seconds\n"
               .format(end - start))
+
 
     def run(self):
 
