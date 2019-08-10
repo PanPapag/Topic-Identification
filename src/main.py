@@ -19,7 +19,7 @@ def make_args_parser():
     parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN', 'BEAT'],
                         default=None, help='''Runs default classifiers: Naive Bayes, Random Forest,
                         Support Vector Machine and K-Nearest Neighbor''')
-    parser.add_argument('--features', choices=['BoW', 'SVD', 'W2V'], default = None,
+    parser.add_argument('--feature', choices=['BoW', 'SVD', 'W2V'], default = None,
                         help='Define features')
     parser.add_argument('--kfold', action='store_true',
                         help='Evaluate and report the performance of each method using 10-fold Cross Validation')
@@ -44,7 +44,7 @@ def main():
     print_args(args)
     # create app object and pass info given by command line arguments
     app = App(args.datasets, args.outputs, args.threshold, args.filter,
-              args.wordcloud, args.classification, args.features, args.kfold, args.cache)
+              args.wordcloud, args.classification, args.feature, args.kfold, args.cache)
     # run app
     app.run()
 

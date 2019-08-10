@@ -19,7 +19,7 @@ class App:
         self.preprocess = preprocess
         self.wordcloud = wordcloud
         self.classification = classification
-        self.features = features
+        self.feature = features
         self.kfold = kfold
         self.cache = cache
 
@@ -188,6 +188,17 @@ class App:
               .format(end - start))
 
 
+    def classify(self):
+
+        start = time.time()
+        # define Bag of Words as default feature
+        feature = "BoW" if self.feature is None else self.feature
+        print("Running {} classifier with the selected feature {}..".format(self.classification, feature))
+
+        end = time.time()
+        print("Running {} classifier with the selected feature {} completed. Time elapsed: {:.3f} seconds\n"
+              .format(self.classification, feature, end - start))
+
     def run(self):
 
         print("App running..\n")
@@ -202,5 +213,8 @@ class App:
 
         if self.dupl_threshold:
             self.find_similar_articles()
+
+        if self.classification:
+            self.classify()
 
         print("App completed.")
