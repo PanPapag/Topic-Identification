@@ -3,6 +3,8 @@ import pandas as pd
 import os
 import time
 
+from classification.support_vector_machine import *
+
 from data_preprocessing.preprocessor import *
 from duplicates.duplicate import *
 from word_cloud.wordcloud import *
@@ -10,7 +12,7 @@ from word_cloud.wordcloud import *
 class App:
 
     def __init__(self, datasets, outputs, dupl_threshold=None, preprocess=None,
-                 wordcloud=False, classification=None, features=None, kfold=False, cache=False):
+                 wordcloud=False, classification=None, feature=None, kfold=False, cache=False):
 
         # pass info from arguments
         self.datasets = datasets
@@ -19,7 +21,7 @@ class App:
         self.preprocess = preprocess
         self.wordcloud = wordcloud
         self.classification = classification
-        self.feature = features
+        self.feature = feature
         self.kfold = kfold
         self.cache = cache
 
@@ -192,12 +194,26 @@ class App:
 
         start = time.time()
         # define Bag of Words as default feature
-        feature = "BoW" if self.feature is None else self.feature
-        print("Running {} classifier with the selected feature {}..".format(self.classification, feature))
+        self.feature = "BoW" if self.feature is None else self.feature
+        print("Running {} classifier with the selected feature {}..".format(self.classification, self.feature))
+        # determine the classifier that gonna be used
+        '''
+        if self.classification == "NB":
+            clf = NaiveBayes
+        elif self.classification == 'RF':
+            clf = RandomForests
+        elif self.classification == 'SVM':
+            clf = SupportVectorMachines
+        elif self.classification == "KNN":
+            clf = KNN '''
+        if self.classification == 'SVM':
+            clf = SupportVectorMachines
+
+        classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
 
         end = time.time()
         print("Running {} classifier with the selected feature {} completed. Time elapsed: {:.3f} seconds\n"
-              .format(self.classification, feature, end - start))
+              .format(self.classification, self.feature, end - start))
 
     def run(self):
 
