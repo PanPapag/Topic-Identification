@@ -4,6 +4,7 @@ import os
 import time
 
 from classification.support_vector_machine import *
+from classification.random_forest import *
 
 from data_preprocessing.preprocessor import *
 from duplicates.duplicate import *
@@ -208,6 +209,8 @@ class App:
             clf = KNN '''
         if self.classification == 'SVM':
             clf = SupportVectorMachine
+        elif self.classification == 'RF':
+            clf = RandomForest
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
         score = classifier.run_kfold() if self.kfold else classifier.run_predict()

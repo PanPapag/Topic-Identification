@@ -10,7 +10,7 @@ class RandomForest(Classifier):
 
 	def define_features(self):
 		steps = Classifier.define_features(self)
-		steps.append(('clf',RandomForestClassifier(n_estimators = 100, criterion = 'entropy')))
+		steps.append(('clf', RandomForestClassifier(n_estimators = 100, criterion = 'entropy')))
 		self.pipeline = Pipeline(steps)
 
 	def run_predict(self):
