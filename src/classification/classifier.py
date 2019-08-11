@@ -28,6 +28,7 @@ class Classifier:
 
     def predict(self, pipeline):
         print(self.steps)
+        return None
 
 
     def predict_kfold(self, pipeline):

@@ -201,22 +201,20 @@ class App:
         if self.classification == "NB":
             clf = NaiveBayes
         elif self.classification == 'RF':
-            clf = RandomForests
+            clf = RandomForest
         elif self.classification == 'SVM':
-            clf = SupportVectorMachines
+            clf = SupportVectorMachine
         elif self.classification == "KNN":
             clf = KNN '''
         if self.classification == 'SVM':
-            clf = SupportVectorMachines
+            clf = SupportVectorMachine
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
         score = classifier.run_kfold() if self.kfold else classifier.run_predict()
 
         end = time.time()
 
-        if self.kfold:
-            print(score)
-            
+        print(score) if self.kfold else None
         print("Running {} classifier with the selected feature {} completed. Time elapsed: {:.3f} seconds\n"
               .format(self.classification, self.feature, end - start))
 
