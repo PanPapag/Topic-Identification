@@ -3,8 +3,10 @@ import pandas as pd
 import os
 import time
 
-from classification.support_vector_machine import *
+from classification.knn import *
+from classification.naive_bayes import *
 from classification.random_forest import *
+from classification.support_vector_machine import *
 
 from data_preprocessing.preprocessor import *
 from duplicates.duplicate import *
