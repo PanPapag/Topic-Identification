@@ -76,7 +76,7 @@ class App:
             print("\t Deleting rows with NaN values completed.")
         except KeyError:
             print("\t File {} has rows with NaN values.".format(self.csv_train_file))
-        print("Cleaning training set completed.")
+        print("Cleaning training set completed.\n")
 
         if not self.kfold:
             print("Cleaning test set..")
@@ -210,10 +210,16 @@ class App:
             clf = SupportVectorMachines
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
+        score = classifier.run_kfold() if self.kfold else classifier.run_predict()
 
         end = time.time()
+
+        if self.kfold:
+            print(score)
+            
         print("Running {} classifier with the selected feature {} completed. Time elapsed: {:.3f} seconds\n"
               .format(self.classification, self.feature, end - start))
+
 
     def run(self):
 
