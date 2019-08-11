@@ -198,7 +198,7 @@ class App:
         self.feature = "BoW" if self.feature is None else self.feature
         print("Running {} classifier with the selected feature {}..".format(self.classification, self.feature))
         # determine the classifier that gonna be used
-        '''
+
         if self.classification == "NB":
             clf = NaiveBayes
         elif self.classification == 'RF':
@@ -206,11 +206,7 @@ class App:
         elif self.classification == 'SVM':
             clf = SupportVectorMachine
         elif self.classification == "KNN":
-            clf = KNN '''
-        if self.classification == 'SVM':
-            clf = SupportVectorMachine
-        elif self.classification == 'RF':
-            clf = RandomForest
+            clf = KNN
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
         score = classifier.run_kfold() if self.kfold else classifier.run_predict()
