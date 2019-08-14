@@ -19,7 +19,7 @@ def make_args_parser():
     parser.add_argument('--classification', choices=['NB', 'RF', 'SVM', 'KNN'],
                         default=None, help='''Runs default classifiers: Naive Bayes, Random Forest,
                         Support Vector Machine and K-Nearest Neighbor''')
-    parser.add_argument('--feature', choices=['BoW', 'SVD', 'W2V'], default = None,
+    parser.add_argument('--feature', choices=['BoW', 'TF-IDF', 'W2V'], default = None,
                         help='Define features')
     parser.add_argument('--kfold', action='store_true',
                         help='Evaluate and report the performance of each method using 10-fold Cross Validation')
