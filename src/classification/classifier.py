@@ -2,7 +2,9 @@ import gensim
 import numpy as np
 
 from sklearn import preprocessing
-
+from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 
 class Classifier:
 
@@ -23,6 +25,18 @@ class Classifier:
 
 
     def define_features(self):
+
+        if self.feature == "W2V":
+            print(self.feature)
+        elif self.feature == "TF-IDF":
+            self.steps.append(('tf-idf', TfidfTransformer(stop_words='english')))
+        else:
+            self.steps.append(('vect', CountVectorizer(stop_words='english')))
+
+        # perform Lantent-Semantic-Indexing (LSI)
+    	svd = TruncatedSVD(n_components=5000)
+		self.steps.append(('svd', svd))
+
         return self.steps
 
 
