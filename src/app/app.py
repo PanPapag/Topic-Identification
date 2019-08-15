@@ -211,11 +211,17 @@ class App:
             clf = KNN
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
-        score = classifier.run_kfold() if self.kfold else classifier.run_predict()
+        scores = classifier.run_kfold() if self.kfold else classifier.run_predict()
 
         end = time.time()
 
-        print(score) if self.kfold else None
+        if self.kfold:
+            # unfold scores' tuple
+            accuracy, precision, recall, f1_score = scores
+            print("----- Classification report -----")
+            print("\tAccuracy: {} \n\tPrecision: {} \n\tRecall: {} \n\tF1-Score: {}".
+                  format(accuracy, precision, recall, f1_score))
+
         print("Running {} classifier with the selected feature {} completed. Time elapsed: {:.3f} seconds\n"
               .format(self.classification, self.feature, end - start))
 
