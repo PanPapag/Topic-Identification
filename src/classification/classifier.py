@@ -2,6 +2,7 @@ import gensim
 import numpy as np
 
 from classification.mean_embedding_vectorizer import *
+from data_preprocessing.preprocessor import *
 
 from sklearn import preprocessing
 from sklearn.decomposition import TruncatedSVD
@@ -32,7 +33,8 @@ class Classifier:
 
         if self.feature == "W2V":
              # let X be a list of tokenized texts (i.e. list of lists of tokens)
-             X =
+             X = Preprocessor().tokenize_doc(self.x_train)
+             print(X)
              # train a Word2Vec model from scratch with gensim
              model = gensim.models.Word2Vec(X, size=100)
              w2v = dict(zip(model.wv.index2word, model.wv.syn0))
