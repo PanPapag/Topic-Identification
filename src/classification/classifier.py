@@ -1,10 +1,13 @@
 import gensim
 import numpy as np
 
+from classification.mean_embedding_vectorizer import *
+
 from sklearn import preprocessing
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.model_selection import KFold
 
 
 class Classifier:
@@ -28,8 +31,10 @@ class Classifier:
     def define_features(self):
 
         if self.feature == "W2V":
+             # let X be a list of tokenized texts (i.e. list of lists of tokens)
+             X =
              # train a Word2Vec model from scratch with gensim
-             model = gensim.models.Word2Vec(self.x_train, size=100)
+             model = gensim.models.Word2Vec(X, size=100)
              w2v = dict(zip(model.wv.index2word, model.wv.syn0))
              self.steps.append(('w2v', MeanEmbeddingVectorizer(w2v)))
         elif self.feature == "TF-IDF":

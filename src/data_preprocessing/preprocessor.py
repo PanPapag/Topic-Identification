@@ -65,5 +65,11 @@ class Preprocessor:
             acum.append(' '.join(self.input_df.loc[self.input_df[spec_col] == label][col].values))
         return ' '.join(acum)
 
+    def tokenize_doc(self, doc):
+        tokenized = []
+        for row in doc:
+            tokenized.append(word_tokenize(row))
+        return tokenized
+
     def save_to_csv(self, df, path):
         df.to_csv(path_or_buf=path, index=False, sep='\t')
