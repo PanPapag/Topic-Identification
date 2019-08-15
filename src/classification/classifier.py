@@ -6,6 +6,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 
+
 class Classifier:
 
     def __init__(self, path, train_df, test_df, feature):
@@ -27,15 +28,18 @@ class Classifier:
     def define_features(self):
 
         if self.feature == "W2V":
-            print(self.feature)
+             # train a Word2Vec model from scratch with gensim
+             model = gensim.models.Word2Vec(self.x_train, size=100)
+             w2v = dict(zip(model.wv.index2word, model.wv.syn0))
+             self.steps.append(('w2v', MeanEmbeddingVectorizer(w2v)))
         elif self.feature == "TF-IDF":
             self.steps.append(('tf-idf', TfidfTransformer(stop_words='english')))
         else:
             self.steps.append(('vect', CountVectorizer(stop_words='english')))
 
         # perform Lantent-Semantic-Indexing (LSI)
-    	svd = TruncatedSVD(n_components=5000)
-		self.steps.append(('svd', svd))
+        svd = TruncatedSVD(n_components=5000)
+        self.steps.append(('svd', svd))
 
         return self.steps
 
