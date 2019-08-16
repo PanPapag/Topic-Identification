@@ -212,12 +212,12 @@ class App:
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
         scores = classifier.run_kfold() if self.kfold else classifier.run_predict()
-
+        
         end = time.time()
 
         if self.kfold:
             # unfold scores' tuple
-            accuracy, precision, recall, f1_score = scores
+            accuracy, precision, recall, f1_score = scores = (1,2,3,4)
             print("----- Classification report -----")
             print("\tAccuracy: {} \n\tPrecision: {} \n\tRecall: {} \n\tF1-Score: {}".
                   format(accuracy, precision, recall, f1_score))
