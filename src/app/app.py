@@ -212,7 +212,7 @@ class App:
 
         classifier = clf(self.classification_out_dir, self.train_df, self.test_df, self.feature)
         scores = classifier.run_kfold() if self.kfold else classifier.run_predict()
-        
+
         end = time.time()
 
         if self.kfold:
