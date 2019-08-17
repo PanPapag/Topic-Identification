@@ -58,8 +58,6 @@ class Classifier:
 
         # fit model
         pipeline.fit(self.x_train, self.y_train)
-        # Output a pickle file for the model
-        joblib.dump(pipeline, dump_path)
         # make predictions and export them to csv file
         predicted = pipeline.predict(self.x_test)
         y_pred = self.le.inverse_transform(predicted)
