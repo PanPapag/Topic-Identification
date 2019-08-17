@@ -6,6 +6,7 @@ from data_preprocessing.preprocessor import *
 
 from sklearn import preprocessing
 from sklearn.decomposition import TruncatedSVD
+from sklearn.externals import joblib
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import accuracy_score
@@ -57,12 +58,15 @@ class Classifier:
 
         # fit model
         pipeline.fit(self.x_train, self.y_train)
+        # Output a pickle file for the model
+        joblib.dump(pipeline, dump_path)
         # make predictions and export them to csv file
-		predicted = pipeline.predict(self.x_test)
-		y_pred = self.le.inverse_transform(predicted)
-		self.export_to_csv(y_pred, self.test_ids, self.path)
+        predicted = pipeline.predict(self.x_test)
+        y_pred = self.le.inverse_transform(predicted)
+        self.export_to_csv(y_pred)
 
-		return None
+        return None
+
 
     def predict_kfold(self, pipeline):
 
@@ -96,3 +100,19 @@ class Classifier:
         avg_f1 = round(avg_scores[2], 4)
 
         return (avg_accuracy, avg_precision, avg_recall, avg_f1)
+
+
+    def export_to_csv(self, predicted_values):
+
+        with open(self.path + 'testSet_categories.csv', 'w') as f:
+            sep = '\t'
+            f.write('Test_Document_ID')
+            f.write(sep)
+            f.write('Predicted Category')
+            f.write('\n')
+
+            for Id, predicted_value in zip(self.test_ids, predicted_values):
+                f.write(str(Id))
+                f.write(sep)
+                f.write(predicted_value)
+                f.write('\n')
