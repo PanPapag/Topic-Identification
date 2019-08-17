@@ -217,7 +217,7 @@ class App:
 
         if self.kfold:
             # unfold scores' tuple
-            accuracy, precision, recall, f1_score = scores = (1,2,3,4)
+            accuracy, precision, recall, f1_score = scores
             print("----- Classification report -----")
             print("\tAccuracy: {} \n\tPrecision: {} \n\tRecall: {} \n\tF1-Score: {}".
                   format(accuracy, precision, recall, f1_score))

@@ -42,7 +42,7 @@ class Classifier:
              w2v = dict(zip(model.wv.index2word, model.wv.syn0))
              self.steps.append(('w2v', MeanEmbeddingVectorizer(w2v)))
         elif self.feature == "TF-IDF":
-            self.steps.append(('tf-idf', TfidfTransformer(stop_words='english')))
+            self.steps.append(('tf-idf', TfidfTransformer()))
         else:
             self.steps.append(('vect', CountVectorizer(stop_words='english')))
 
@@ -54,25 +54,35 @@ class Classifier:
 
 
     def predict(self, pipeline):
-        print(self.steps)
-        return None
 
+        # fit model
+        pipeline.fit(self.x_train, self.y_train)
+        # make predictions and export them to csv file
+		predicted = pipeline.predict(self.x_test)
+		y_pred = self.le.inverse_transform(predicted)
+		self.export_to_csv(y_pred, self.test_ids, self.path)
+
+		return None
 
     def predict_kfold(self, pipeline):
 
         score_array = []
         accuracy_array = []
-
+        # apply 10-fold cross validation
         kf = KFold(n_splits=10)
-        print(self.x_train) # TODO missing label
 
         for train_index, test_index in kf.split(self.x_train):
+            # use iloc which is label based indexing
+            cv_train_x = self.x_train.iloc[train_index]
+            cv_test_x = self.x_train.iloc[test_index]
+            cv_train_y = self.y_train[train_index]
+            cv_test_y = self.y_train[test_index]
             # fit model
-            pipeline.fit(self.x_train[train_index], self.y_train[train_index])
+            pipeline.fit(cv_train_x, cv_train_y)
             # predict label in form of numbers {0,1,2,3,4}
-            predicted = pipeline.predict(self.x_train[test_index])
+            predicted = pipeline.predict(cv_test_x)
             # apply inverse transform to get labels
-            y_labels = self.le.inverse_transform(self.y_train[test_index])
+            y_labels = self.le.inverse_transform(cv_test_y)
             y_pred = self.le.inverse_transform(predicted)
             # append score and accuracy values to corresponding arrays
             score_array.append(precision_recall_fscore_support(y_labels, y_pred, average=None))
