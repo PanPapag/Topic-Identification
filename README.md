@@ -20,7 +20,7 @@
 1. Open the terminal
 2. Type ```git clone https://github.com/PanPapag/SMS-Spam-Detection-System.git``` 
    to clone the repository to your local machine
-3. Type ``pip install -r requirements.txt```
+3. Type ```pip install -r requirements.txt```
 4. Type ```python -m spacy download en_core_web_sm```
 3. Type ```python src/main.py --help ``` to view possible options
 4. Type ```python src/main.py ``` to run the app
